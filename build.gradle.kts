@@ -15,7 +15,8 @@ plugins {
 
 group = "io.github.trysac"
 version = "0.1.0"
-description = "Coroutine data-access layer with a bounded suspending connection pool, cancellation-safe transactions, per-call timeouts and a guard that fails blocking calls on event-loop threads"
+description =
+    "Coroutine data-access layer with a bounded suspending connection pool, cancellation-safe transactions, per-call timeouts and a guard that fails blocking calls on event-loop threads"
 
 // Build output; the gates image moves it out of the mounted repository (FABRICA_BUILD_DIR).
 providers.environmentVariable("FABRICA_BUILD_DIR").orNull?.takeIf { it.isNotEmpty() }?.let {
@@ -50,6 +51,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("net.jqwik:jqwik:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
 }
 
 // CI-only conformance tier: tests tagged @Tag("conformance") run only when FABRICA_CI=1 (the CI
