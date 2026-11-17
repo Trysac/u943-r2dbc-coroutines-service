@@ -1,30 +1,12 @@
 # Architecture
 
-## Purpose
+## Overview
 
-`io.github.trysac:r2dbc-coroutines-service` is a small, dependency-free Kotlin library: Coroutine data-access layer with a bounded suspending connection pool, cancellation-safe transactions, per-call timeouts and a guard that fails blocking calls on event-loop threads
+The library implements a deterministic coroutine layer over a database port shaped like the R2DBC SPI, consisting of `DbConnection` and `ConnectionFactory`.
 
-## Shape
+## Core Components
 
-```text
-caller code --> package io.github.trysac.r2dbc_coroutines_service (src/main/kotlin)
-                    |
-                    +-- objects and top-level functions that are pure; no I/O, no global mutable state
-                    +-- internal or private helpers (optional)
-```
-
-- **Public API**: every public declaration of the package. `internal` and `private` declarations
-  may change without a major version.
-- **Errors**: invalid input throws an `IllegalArgumentException` subclass of the library (such as
-  `BlankInputException`) documented with `@throws`. The library never prints or exits.
-- **Side effects**: none. If a feature needs I/O, accept an `InputStream`, a `Reader` or a small
-  interface instead of opening resources, and record the choice in an ADR.
-
-## Quality contract
-
-`scripts/Check.java` is the single definition of the gates; `fabrica.json` tells the factory and CI
-how to run it. See [TESTING.md](TESTING.md).
-
-## Decisions
-
-Architecture decisions are recorded in [decisions/](decisions/) as numbered ADRs.
+1. **`CoroutinePool`**: Manages an `ArrayDeque` of idle connections and a FIFO queue of waiters protected by a `Mutex`. It automatically closes connections that time out, are cancelled, or throw exceptions.
+2. **`GuardedConnection`**: Wraps `DbConnection` to enforce constraints (SQL length, row count, query timeout) before forwarding execution.
+3. **`EventLoopGuard`**: A runtime registry for threads that must not block. It intercepts calls via the `blocking { }` helper.
+4. **Transactions**: The `transaction` extension uses `NonCancellable` exclusively for `COMMIT` and `ROLLBACK` to ensure resource cleanup.

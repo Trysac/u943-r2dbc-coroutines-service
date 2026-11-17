@@ -1,34 +1,14 @@
 # Testing
 
-## Running
+## Existing Tests
 
-```sh
-java scripts/Gradle.java test   # JUnit 5 and jqwik tests
-java scripts/Check.java         # every gate, as CI and the factory run it
-```
+- **`CoroutinePoolAcceptanceTest.kt`**: Tests pool bounds, FIFO acquisition, cancellation cleanup, transaction semantics, EventLoopGuard behavior, and service-layer validation.
+- **`TextPropertiesTest.kt`**: Property-based tests using `jqwik` verifying normalization logic and concurrency invariants.
+- **`TextTest.kt`**: Unit tests for `Text` normalization logic and error handling.
+- **`FakeConnectionFactory.kt`**: A deterministic in-memory `ConnectionFactory` used by the test suite to verify statement sequencing, simulate failures, and inject delays.
 
 ## Policy
 
-- Line coverage of the library (measured by Kover) must stay at or above 80 %; the gate fails
-  below it.
-- Tests exercise the public API. They assert every observable effect: returned values, thrown
-  exceptions (`assertThrows<T>`) and their messages.
-- Property tests (jqwik `@Property`) state invariants such as idempotence or round trips.
-- Each bug fix starts with a failing test that reproduces it.
-- Tests are deterministic: no network, no wall clock, no dependence on test order.
-
-## Tiers
-
-- Local tier (every gate run, coverage measured here): unit and property tests, plus conformance
-  on small fixtures kept in the repository.
-- CI tier: conformance that needs an external tool or a download. Tag the test class or function
-  with `@Tag("conformance")`; the Gradle test task excludes the tag unless `FABRICA_CI=1`, while
-  the lint gate always compiles it. The CI `conformance` job sets `FABRICA_CI=1` and runs the full
-  suite. Tools are installed by the optional `ci/conformance-setup.sh` (bash, CI only; verify every
-  download against a pinned SHA-256), and tests skip cleanly (`Assumptions.assumeTrue`) when their
-  tool is missing.
-
-## Layout
-
-Tests live in `src/test/kotlin/` in the library's package, one `*Test.kt` class per area.
-Fixtures and golden files go in `src/test/resources/fixtures/`.
+- Coverage must stay at or above 80%.
+- Tests are deterministic, utilizing virtual time via `runTest`.
+- All observable effects, including thrown `ServiceException` codes, are verified.

@@ -1,16 +1,10 @@
 # r2dbc-coroutines-service
 
-> Coroutine data-access layer with a bounded suspending connection pool, cancellation-safe transactions, per-call timeouts and a guard that fails blocking calls on event-loop threads Kotlin library `io.github.trysac:r2dbc-coroutines-service`, package
-> `io.github.trysac.r2dbc_coroutines_service`, MIT licensed, Kotlin 2 on Java >= 21, standard library only.
+Coroutine data-access layer with a bounded suspending connection pool, cancellation-safe transactions, per-call timeouts and a guard that fails blocking calls on event-loop threads.
 
-## Docs
+## Documentation
 
-- [README](README.md): problem, install, usage example
-- [AGENTS](AGENTS.md): commands, folder map, conventions, limits
-- [Architecture](docs/ARCHITECTURE.md): shape of the library and its public API
-- [Testing](docs/TESTING.md): how to run and extend the tests
-
-## Optional
-
-- [Stack](docs/STACK.md): tools used and discarded
-- [Changelog](CHANGELOG.md): release history
+- [README](README.md): Problem, usage, and public API summary.
+- [Architecture](docs/ARCHITECTURE.md): Core component design and SPI.
+- [Security](docs/SECURITY.md): Threat model and resource bounds.
+- [Testing](docs/TESTING.md): Coverage and test policies.
